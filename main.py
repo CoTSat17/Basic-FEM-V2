@@ -14,10 +14,16 @@ running = True
 
 
 
-#MENUS setup
+
+
+
+#__ MENUS setup __
 
 menus = Menus(screen)
-menus.new_menu("B", 100)
+bot_menu = menus.new_menu("B", 100, )
+## Buttons setup
+button_test = bot_menu.create_button((10,10),(80,40),"TEST")
+button_test.change_active()
 
 
 
@@ -27,6 +33,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    screen.fill("white")
+    
 
 
     menus.render_menus()
