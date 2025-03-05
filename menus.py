@@ -150,15 +150,18 @@ class Menu(pygame.Surface):
                 
 
 
-        def create_button(self, position: tuple[int,int], size: tuple[int,int], text:str)-> "Button":
+        def create_button(self, position: tuple[int,int], size: tuple[int,int], text:str, active:bool=False)-> "Button":
                 """
                 Creates a button in the Menu.\n
-                ::INPUT::\n
-                Position: Position of the button, relative to the surface\n
-                Size: Size of the button\n
-                Text: Text to be displayed in the button
+                ::INPUT::
+                        Position: Position of the button, relative to the surface
+                        Size: Size of the button
+                        Text: Text to be displayed in the button
+                        Active: Sets the button starting value
+                ::OUTPUT::
+                        Returns the created instance
                 """
-                new_button = Button(position, size, text)
+                new_button = Button(position, size, text, active)
                 self.buttons.append(new_button)
                 return new_button
 
@@ -167,26 +170,28 @@ class Menu(pygame.Surface):
 # _________ BUTTONS _________
 
 class Button(pygame.Surface):
-        def __init__(self, position: tuple[int,int], size: tuple[int,int], text:str):
+        def __init__(self, position: tuple[int,int], size: tuple[int,int], text:str, active:bool=False):
                 """
                 Generates a new button\n
-                ::INPUT::\n
-                Position: Position of the button, relative to the surface\n
-                Size: Size of the button\n
-                Text: Text to be displayed in the button
+                ::INPUT::
+                        Position: Position of the button, relative to the surface
+                        Size: Size of the button
+                        Text: Text to be displayed in the button
+                        Active: Sets the button starting value
                 """
                 self.position = position
                 self.size = size
                 self.text = text
-                self.__active = False
+                self.__active = active
 
                 #Text
                 self.text_surf = font_normal.render(self.text, 0, "black")
                 self.text_position = ( (self.size[0] - self.text_surf.get_width())/2 , (self.size[1] - self.text_surf.get_height())/2 )
                 
                 super().__init__(self.size)
-                self.fill("dark gray")
-
+                # Color changes 2 times so that it can be applied but not changed
+                self.change_active()
+                self.change_active()
         
         def change_active(self):
                 """

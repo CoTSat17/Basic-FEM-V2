@@ -20,11 +20,9 @@ click_event = None
 
 menus = Menus(screen)
 bot_menu = menus.new_menu("B", 100)
-top_menu = menus.new_menu("T", 100)
 
 ## Buttons setup
 button_test = bot_menu.create_button((10,10),(80,40),"TEST")
-button_test.change_active()
 
 
 
