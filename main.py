@@ -1,6 +1,6 @@
 import pygame
 from menus import Menus
-
+from drawing import Drawing
 
 
 
@@ -25,6 +25,10 @@ bot_menu = menus.new_menu("B", 100)
 button_test = bot_menu.create_button((10,10),(80,40),"TEST")
 
 
+#__ DRAWING Setup __
+drawings = Drawing(screen)
+
+
 
 while running:
 
@@ -42,11 +46,15 @@ while running:
         click_event = None
 
     
+
+
+
     screen.fill("white")
     
 
 
     menus.flip(click_event)
+    drawings.flip(click_event)
 
 
     pygame.display.flip()
