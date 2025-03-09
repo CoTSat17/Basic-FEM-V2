@@ -16,9 +16,18 @@ def coord_inside_surf(coord:tuple[int,int], surf_position:tuple[int,int], surf_s
         
 
 
+
+
+
 pygame.font.init()
 font_normal = pygame.font.SysFont("calibri", 20)
 font_bold   = pygame.font.SysFont("calibri", 20, True)
+
+
+
+
+
+#____ MENUS _____
 
 class Menus():
         def __init__(self, screen:pygame.Surface):
@@ -41,52 +50,43 @@ class Menus():
                 return new_menu
 
 
-        def flip(self, event:pygame.event.Event):
-                """
-                Executes all needed functions for each frame\n
-                \t -Detects button click\n
-                \t -Renders menus and buttons\n
-                ::INPUT::
-                \t -Event: Clicking event
-                """
-                if event != None: # Checks if a "mousbuttonevent" occurred this frame
-                        self.__click_event()
-                self.__render_menus()
 
-
-        def __click_event(self):
+        def click_event(self):
                 """
                 Handles the click event in the menus\n
                 ::INPUT::
                         -Event: Clicking event
 
                 ::OUTPUT::
-                        -If click outside menus -> "None"
+                        -If click outside menus -> "False"
+                        -If click inside menus -> "True"
                 """
                 #Click Event
                 clicked_menu = ""
                 click_position = pygame.mouse.get_pos()
+
+                #Check if its inside a menu
                 for menu in self.menus:
-                        #Check if its inside a menu
                         if  coord_inside_surf(click_position, menu.position, menu.dimmension):
                                 clicked_menu = menu
                                 break
                 if clicked_menu == "": #If no menu was reached
-                        return None
+                        return False
 
-
+                #Check if its inside a button
                 for button in clicked_menu.buttons:
                         # The coord of the button are relative to the menu so must be adjusted
                         relative_click_position = (click_position[0] -menu.position[0], click_position[1] -menu.position[1])
                         if coord_inside_surf(relative_click_position, button.position, button.size):
                                 button.change_active()
-                        
+                
+                return True
 
 
-        def __render_menus(self):
+        def render_menus(self):
                 """
                 Renders the menu to the screen and its buttons
-                """
+                """ 
                 for menu in self.menus:
                         #Render the menu
                         self.screen.blit(menu, menu.position)
@@ -94,6 +94,15 @@ class Menus():
                         for button in menu.buttons:
                                 button.blit(button.text_surf, button.text_position)
                                 menu.blit(button, button.position)
+
+        
+        def reset_all_buttons(self):
+                """
+                Sets all buttons to the inactive state
+                """
+                for menu in self.menus:
+                        for button in menu.buttons:
+                                button.change_active(False)
 
 
         def __update_menus(self):
@@ -103,6 +112,7 @@ class Menus():
                 """
                 for menu in self.menus:
                         menu.update_menu(self)
+
 
 
 
@@ -167,6 +177,11 @@ class Menu(pygame.Surface):
 
 
 
+
+
+
+
+
 # _________ BUTTONS _________
 
 class Button(pygame.Surface):
@@ -182,7 +197,7 @@ class Button(pygame.Surface):
                 self.position = position
                 self.size = size
                 self.text = text
-                self.__active = active
+                self.active = active
 
                 #Text
                 self.text_surf = font_normal.render(self.text, 0, "black")
@@ -193,16 +208,21 @@ class Button(pygame.Surface):
                 self.change_active()
                 self.change_active()
         
-        def change_active(self):
+
+
+        def change_active(self, to:bool=None):
                 """
                 Changes the button from active to inactive or inverse\n
                 Also changes the button colour.
+                ::INPUT::
+                        To: indicates to which state to change, if nothing it will alternate
                 """
-                if self.__active:       #Changes to inactive
-                        self.__active = False
+
+                if self.active and to != True:       #Changes to inactive
+                        self.active = False
                         self.fill("dark gray")
                         self.text_surf = font_normal.render(self.text, 0, "black")
-                else:                   #Changes to active
-                        self.__active = True
+                elif to != False:                   #Changes to active
+                        self.active = True
                         self.fill("black")
                         self.text_surf = font_bold.render(self.text, 0, "white")
